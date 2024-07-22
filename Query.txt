@@ -1,0 +1,143 @@
+﻿-- Recuperare il dettaglio della prenotazione
+SELECT 
+    c.Descrizione AS DescrizioneStanza,
+    p.idPrenotazione,
+    p.DataInizioSoggiorno,
+    p.DataFineSoggiorno,
+    p.Tariffa AS TariffaApplicata,
+    ISNULL(SUM(s.Prezzo * s.Quantita), 0) AS TotaleServiziAggiuntivi,
+    (p.Tariffa - p.Caparra + ISNULL(SUM(s.Prezzo * s.Quantita), 0)) AS ImportoDaSaldare
+FROM 
+    Prenotazioni p
+JOIN 
+    Camera c ON p.idCamera = c.idCamera
+LEFT JOIN 
+    ServiziAggiuntivi s ON p.idPrenotazione = s.idPrenotazione
+GROUP BY 
+    c.Descrizione,
+    p.idPrenotazione,
+    p.DataInizioSoggiorno,
+    p.DataFineSoggiorno,
+    p.Tariffa,
+    p.Caparra
+ORDER BY 
+    p.idPrenotazione;
+
+-- Ricercare le prenotazioni effettuate da un cliente in base al codice fiscale
+SELECT 
+    p.idPrenotazione,
+    c.Nome,
+    c.Cognome,
+    c.CodiceFiscale,
+    cam.Descrizione AS NumeroStanza,
+    p.DataPrenotazione,
+    p.DataInizioSoggiorno,
+    p.DataFineSoggiorno,
+    p.Tariffa,
+    p.TipoPensione,
+    p.Caparra
+FROM 
+    Clienti c
+JOIN 
+    Prenotazioni p ON c.idCliente = p.idCliente
+JOIN 
+    Camera cam ON p.idCamera = cam.idCamera
+WHERE 
+    c.CodiceFiscale = 'INSERISCI_CODICE_FISCALE'
+ORDER BY 
+    p.DataPrenotazione DESC;
+
+-- Ricercare il numero totale di prenotazioni per i soggiorni di tipo “pensione completa”.
+SELECT COUNT(*) AS NumeroTotalePrenotazioni
+FROM [dbo].[Prenotazioni]
+WHERE TipoPensione = 'pensione completa';
+
+---------------------------------
+INSERT
+
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Camera con vista mare', 'doppia');
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Camera standard', 'singola');
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Suite presidenziale', 'doppia');
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Camera con balcone', 'doppia');
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Camera economy', 'singola');
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Camera deluxe', 'doppia');
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Camera familiare', 'doppia');
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Camera con vasca idromassaggio', 'doppia');
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Camera business', 'singola');
+INSERT INTO [dbo].[Camera] (Descrizione, Tipologia) VALUES ('Camera con angolo cottura', 'doppia');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('RSSMRA80A01H501Z', 'Rossi', 'Mario', 'Roma', 'RM', 'mario.rossi@example.com', '0612345678', '3209876543');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('BNCGNN85B01F205X', 'Bianchi', 'Gianna', 'Firenze', 'FI', 'gianna.bianchi@example.com', '0552345678', '3208765432');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('VRDLGI70C01M876K', 'Verdi', 'Luigi', 'Milano', 'MI', 'luigi.verdi@example.com', '0281234567', '3281234567');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('BLUSMN95D01N345Q', 'Blasi', 'Simone', 'Napoli', 'NA', 'simone.blasi@example.com', '0811234567', '3298765432');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('NRRFBA88E01B101U', 'Neri', 'Fabiana', 'Bologna', 'BO', 'fabiana.neri@example.com', '0512345678', '3309876543');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('PTTRCN90F01T345Y', 'Petro', 'Riccardo', 'Torino', 'TO', 'riccardo.petro@example.com', '0112345678', '3311234567');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('MRTLCU75G01V456J', 'Martini', 'Lucia', 'Venezia', 'VE', 'lucia.martini@example.com', '0411234567', '3328765432');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('STRNLC82H01L543P', 'Storni', 'Nicola', 'Livorno', 'LI', 'nicola.storni@example.com', '0581234567', '3339876543');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('MNFRLA65I01G123F', 'Manfredi', 'Laura', 'Genova', 'GE', 'laura.manfredi@example.com', '0102345678', '3341234567');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('CNTGIO91L01C789K', 'Conti', 'Giorgio', 'Catania', 'CT', 'giorgio.conti@example.com', '0951234567', '3358765432');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('RSPVLC80M01S234D', 'Raspini', 'Valeria', 'Siracusa', 'SR', 'valeria.raspini@example.com', '0931234567', '3369876543');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('CLGMRT77N01P345A', 'Caligari', 'Marta', 'Palermo', 'PA', 'marta.caligari@example.com', '0911234567', '3371234567');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('SMNSRA85O01A678B', 'Simons', 'Sara', 'Ancona', 'AN', 'sara.simons@example.com', '0711234567', '3388765432');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('LNDGRG78P01T901G', 'Landi', 'Giorgio', 'Trento', 'TN', 'giorgio.landi@example.com', '0461234567', '3399876543');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('MRMFLT89Q01R234M', 'Mariani', 'Filippo', 'Roma', 'RM', 'filippo.mariani@example.com', '0612345679', '3401234567');
+
+INSERT INTO [dbo].[Clienti] (CodiceFiscale, Cognome, Nome, Citta, Provincia, Email, Telefono, Cellulare)
+VALUES ('RLCMRZ92R01B678H', 'Rossi', 'Marzia', 'Bari', 'BA', 'marzia.rossi@example.com', '0801234567', '3418765432');
+
+-- Prenotazione 1
+INSERT INTO [dbo].[Prenotazioni] (idCliente, idCamera, DataPrenotazione, DataInizioSoggiorno, DataFineSoggiorno, Caparra, Tariffa, TipoPensione)
+VALUES (1, 1, GETDATE(), '2024-08-01', '2024-08-05', 100.00, 400.00, 'pensione completa');
+
+-- Prenotazione 2
+INSERT INTO [dbo].[Prenotazioni] (idCliente, idCamera, DataPrenotazione, DataInizioSoggiorno, DataFineSoggiorno, Caparra, Tariffa, TipoPensione)
+VALUES (2, 2, GETDATE(), '2024-08-10', '2024-08-15', 150.00, 600.00, 'mezza pensione');
+
+-- Prenotazione 3
+INSERT INTO [dbo].[Prenotazioni] (idCliente, idCamera, DataPrenotazione, DataInizioSoggiorno, DataFineSoggiorno, Caparra, Tariffa, TipoPensione)
+VALUES (3, 3, GETDATE(), '2024-08-20', '2024-08-25', 200.00, 1000.00, 'pensione completa');
+
+-- Prenotazione 4
+INSERT INTO [dbo].[Prenotazioni] (idCliente, idCamera, DataPrenotazione, DataInizioSoggiorno, DataFineSoggiorno, Caparra, Tariffa, TipoPensione)
+VALUES (4, 4, GETDATE(), '2024-09-01', '2024-09-05', 120.00, 480.00, 'pensione completa');
+
+-- Prenotazione 5
+INSERT INTO [dbo].[Prenotazioni] (idCliente, idCamera, DataPrenotazione, DataInizioSoggiorno, DataFineSoggiorno, Caparra, Tariffa, TipoPensione)
+VALUES (5, 5, GETDATE(), '2024-09-10', '2024-09-15', 180.00, 720.00, 'mezza pensione');
+
+-- Prenotazione 6
+INSERT INTO [dbo].[Prenotazioni] (idCliente, idCamera, DataPrenotazione, DataInizioSoggiorno, DataFineSoggiorno, Caparra, Tariffa, TipoPensione)
+VALUES (6, 6, GETDATE(), '2024-09-20', '2024-09-25', 130.00, 520.00, 'pensione completa');
+
+-- Prenotazione 7
+INSERT INTO [dbo].[Prenotazioni] (idCliente, idCamera, DataPrenotazione, DataInizioSoggiorno, DataFineSoggiorno, Caparra, Tariffa, TipoPensione)
+VALUES (7, 7, GETDATE(), '2024-10-01', '2024-10-05', 140.00, 560.00, 'mezza pensione');
